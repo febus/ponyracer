@@ -31,10 +31,9 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.navbarCollapsed = !this.navbarCollapsed;
   }
 
-  logout(event) : void {
+  logout(event : any) : void {
     event.preventDefault();
     this.userService.logout();
-
   }
 
 
