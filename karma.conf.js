@@ -4,12 +4,15 @@
 module.exports = function (config) {
   config.set({
     basePath: '',
+    browserNoActivityTimeout: 30000,
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
+      require('karma-firefox-launcher'),
+      require('karma-json-reporter'),
       require('@angular-devkit/build-angular/plugins/karma')
     ],
     client: {
@@ -17,15 +20,19 @@ module.exports = function (config) {
     },
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, './coverage/ponyracer'),
-      reports: ['html', 'lcovonly', 'text-summary'],
+      reports: ['html', 'json-summary', 'text-summary'],
       fixWebpackSourcePaths: true
     },
-    reporters: ['progress', 'kjhtml'],
+    jsonReporter: {
+      stdout: false,
+      outputFile: './results/karma-results.json'
+    },
+    reporters: process.env.CI === 'true' ? ['dots', 'json'] : ['progress', 'json', 'kjhtml'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
+    browsers: process.env.CI === 'true' ? ['ChromeHeadless'] : ['Chrome'],
     singleRun: false,
     restartOnFileChange: true
   });
