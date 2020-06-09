@@ -4,13 +4,14 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {UserModel} from "./models/user.model";
 import {tap} from "rxjs/operators";
 import {environment} from "../environments/environment";
+import { JwtInterceptor } from './jwt.interceptor';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   userEvents = new BehaviorSubject<UserModel>(undefined);
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private jwtInterceptor: JwtInterceptor) {
   }
   register (login : string, password : string, birthYear : number) : Observable<UserModel> {
     const body = {"login" : login, "password" : password, "birthYear" : birthYear}
@@ -30,6 +31,7 @@ export class UserService {
 
   storeLoggedInUser(user : UserModel) {
     window.localStorage.setItem('rememberMe', JSON.stringify(user));
+    this.jwtInterceptor.setJwtToken(user.token);
     this.userEvents.next(user);
   }
 
@@ -43,6 +45,7 @@ export class UserService {
 
   logout(){
     this.userEvents.next(null);
+    this.jwtInterceptor.removeJwtToken();
     window.localStorage.removeItem('rememberMe');
   }
 

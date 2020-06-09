@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule} from "@angular/router";
 import { ROUTES } from "./app.routes";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -15,12 +15,13 @@ import { FromNowPipe } from './from-now.pipe';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
+import { JwtInterceptor } from './jwt.interceptor';
 
 
 @NgModule({
   declarations: [AppComponent, MenuComponent, RacesComponent, RaceComponent, PonyComponent, FromNowPipe, HomeComponent, RegisterComponent, LoginComponent],
   imports: [BrowserModule, HttpClientModule, RouterModule.forRoot(ROUTES), ReactiveFormsModule, FormsModule],
-  providers: [],
+  providers: [{ provide: HTTP_INTERCEPTORS, useExisting: JwtInterceptor, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
