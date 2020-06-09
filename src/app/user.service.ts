@@ -39,6 +39,7 @@ export class UserService {
     const value  = window.localStorage.getItem('rememberMe');
     if(value) {
       const user = JSON.parse(value);
+      this.jwtInterceptor.setJwtToken(user.token);
       this.userEvents.next(user);
     }
   }
